@@ -1,0 +1,13 @@
+---
+
+- name: Install base packages
+  become: yes
+  hosts: all
+  roles:
+    - {role: packages, tags: packages}
+
+- name: Setup postgres
+  become: yes
+  hosts: all
+  roles:
+    - {role: postgresql, tags: postgresql}

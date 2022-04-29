@@ -1,0 +1,9 @@
+---
+
+- name: Install postgresql
+  apt:
+    name: postgresql
+
+- name: Install Python packages
+  pip: 
+    name: psycopg2-binary
