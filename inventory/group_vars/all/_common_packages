@@ -1,0 +1,8 @@
+---
+
+common_packages: [
+  python3-pip, atop, cmake, ctop, curl, dstat, ethtool, fatrace, git,
+  gpg, htop, iftop, iotop, iperf3, libuser, linux-firmware, linux-tools-common, 
+  lldpd, mailutils, man-db, mc, ncdu, parallel, pigz, screen,
+  stress, sysstat, tmux, traceroute, tree, util-linux, vim, zsh
+]
