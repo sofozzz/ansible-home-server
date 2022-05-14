@@ -11,3 +11,9 @@
   hosts: all
   roles:
     - {role: postgresql, tags: postgresql}
+
+- name: Setup docker
+  become: yes
+  hosts: all
+  roles:
+    - {role: docker, tags: docker}
