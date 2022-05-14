@@ -5,7 +5,7 @@
     name: postgresql-12
 
 - name: Pip install psycopg2
-  pip: 
+  pip:
     name: psycopg2-binary
 
 - name: Setup postgresql config
@@ -17,7 +17,7 @@
     - postgresql.conf
   notify: restart postgresql
 
-- name: Allow utw for postgresql
+- name: Allow ufw for postgresql
   ufw:
     rule: allow
     direction: in

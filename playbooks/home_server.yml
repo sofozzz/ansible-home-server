@@ -1,25 +1,21 @@
 ---
 
 - name: Install base packages
-  become: yes
   hosts: all
   roles:
     - {role: packages, tags: packages}
 
 - name: Setup postgres
-  become: yes
   hosts: all
   roles:
     - {role: postgresql, tags: postgresql}
 
 - name: Setup docker
-  become: yes
   hosts: all
   roles:
     - {role: docker, tags: docker}
 
 - name: Setup hadoop
-  become: yes
   hosts: all
   roles:
     - {role: hadoop, tags: hadoop}

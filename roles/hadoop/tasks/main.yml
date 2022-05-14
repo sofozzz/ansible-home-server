@@ -1,5 +1,5 @@
 ---
-- name: Group hadoop 
+- name: Group hadoop
   group:
     name: hadoop
 
@@ -16,7 +16,7 @@
     - openjdk-8-jre-headless
     - openjdk-11-jre-headless
 
-- name: Distribution hadoop 
+- name: Distribution hadoop
   shell: # noqa 303
     cmd: |
       wget -q "{{ hadoop_download_url }}" && \
