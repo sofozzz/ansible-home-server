@@ -2,8 +2,26 @@
 
 - name: Install postgresql
   apt:
-    name: postgresql
+    name: postgresql-12
 
 - name: Install Python packages
   pip: 
     name: psycopg2-binary
+
+- name: Setup postgresql config
+  template:
+    src: "{{ item }}"
+    dest: "/etc/postgresql/12/main/{{ item }}"
+  loop:
+    - pg_hba.conf
+    - postgresql.conf
+  notify: restart postgresql
+
+- name: Allow utw for postgresql
+  ufw:
+    rule: allow
+    direction: in
+    proto: tcp
+    src: "{{ ansible_default_ipv4.address }}/24"
+    dest: any
+    to_port: '5432'
