@@ -1,0 +1,11 @@
+[Unit]
+Description=Hadoop YARN Resource Manager
+
+[Service]
+User=yarn
+Group=hadoop
+Environment=JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 HADOOP_CONF_DIR=/etc/hadoop YARN_ROOT_LOGGER=INFO,console,DRFA YARN_LOGFILE=yarn-resourcemanager.log
+ExecStart=/opt/hadoop/bin/yarn resourcemanager
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,9 @@
+[Unit]
+Description=Create Cgroups for YARN NodeManager
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c "mkdir -p /sys/fs/cgroup/{cpu,memory,blkio,net_cls,devices}/hadoop-yarn ; chown -R yarn:hadoop /sys/fs/cgroup/*/hadoop-yarn"
+
+[Install]
+WantedBy=multi-user.target

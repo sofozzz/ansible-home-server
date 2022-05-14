@@ -1,0 +1,15 @@
+---
+
+- name: systemctl daemon-reload
+  systemd:
+    daemon_reload: yes
+
+- name: restart yarn-nodemanager
+  systemd:
+    name: yarn-nodemanager
+    state: restarted
+
+- name: restart yarn-resourcemanager
+  systemd:
+    name: yarn-resourcemanager
+    state: restarted

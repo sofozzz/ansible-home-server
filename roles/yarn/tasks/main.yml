@@ -1,0 +1,88 @@
+---
+
+- name: Create yarn config directory
+  file:
+    path: /etc/hadoop
+    state: directory
+    owner: root
+    mode: 0755
+
+- name: Yarn config
+  template:
+    src: "{{ item }}"
+    dest: "/etc/{{ item }}"
+    force: yes
+  loop:
+    - hadoop/capacity-scheduler.xml
+    - hadoop/capacity-scheduler.xml
+    - hadoop/hadoop-user-functions.sh.example
+    - hadoop/kms-log4j.properties
+    - hadoop/ssl-server.xml.example
+    - hadoop/configuration.xsl
+    - hadoop/hdfs-rbf-site.xml
+    - hadoop/kms-site.xml
+    - hadoop/user_ec_policies.xml.template
+    - hadoop/container-executor.cfg
+    - hadoop/hdfs-site.xml
+    - hadoop/log4j.properties
+    - hadoop/workers
+    - hadoop/core-site.xml
+    - hadoop/httpfs-env.sh
+    - hadoop/mapred-env.cmd
+    - hadoop/yarn-env.cmd
+    - hadoop/hadoop-env.cmd
+    - hadoop/httpfs-log4j.properties
+    - hadoop/mapred-env.sh
+    - hadoop/yarn-env.sh
+    - hadoop/hadoop-env.sh
+    - hadoop/httpfs-site.xml
+    - hadoop/mapred-queues.xml.template
+    - hadoop/yarn-site.xml
+    - hadoop/hadoop-metrics2.properties
+    - hadoop/kms-acls.xml
+    - hadoop/mapred-site.xml
+    - hadoop/yarnservice-log4j.properties
+    - hadoop/hadoop-policy.xml
+    - hadoop/kms-env.sh
+    - hadoop/ssl-client.xml.example
+  notify:
+    - restart yarn-resourcemanager
+    - restart yarn-nodemanager
+
+- name: Hosts
+  template:
+    src: hosts
+    dest: /etc/hosts
+  tags:
+    - /etc/hosts
+
+- name: Yarn service files
+  template:
+    src: "{{ item }}"
+    dest: "/etc/systemd/system/{{ item }}"
+  loop:
+    - yarn-cgroup.service
+    - yarn-nodemanager.service
+    - yarn-resourcemanager.service
+  notify: systemctl daemon-reload
+
+- name: Start Yarn nodemanager service
+  systemd:
+    name: yarn-nodemanager
+    state: started
+    enabled: yes
+
+- name: Start Yarn resourcemanager service
+  systemd:
+    name: yarn-resourcemanager
+    state: started
+    enabled: yes
+
+- name: Allow ufw for yarn
+  ufw:
+    rule: allow
+    direction: in
+    proto: tcp
+    src: "{{ ansible_default_ipv4.address }}/24"
+    dest: any
+    to_port: '8088'

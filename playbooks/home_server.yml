@@ -19,3 +19,8 @@
   hosts: all
   roles:
     - {role: hadoop, tags: hadoop}
+
+- name: Setup yarn
+  hosts: all
+  roles:
+    - {role: yarn, tags: yarn}
