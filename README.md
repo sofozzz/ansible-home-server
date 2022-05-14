@@ -1,6 +1,8 @@
 # ansible-home-server
 Ansible playbooks for setup home server
 
-#### Linting
+#### Linting YAML
+
+```shell
 yamllint --strict inventory playbooks roles
-ansible-lint -v roles/* playbooks/*.yml
+```
