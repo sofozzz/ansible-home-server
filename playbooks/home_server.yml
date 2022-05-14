@@ -17,3 +17,9 @@
   hosts: all
   roles:
     - {role: docker, tags: docker}
+
+- name: Setup hadoop
+  become: yes
+  hosts: all
+  roles:
+    - {role: hadoop, tags: hadoop}

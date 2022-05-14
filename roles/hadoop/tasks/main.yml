@@ -1,0 +1,58 @@
+---
+- name: Group hadoop 
+  group:
+    name: hadoop
+
+- name: User yarn
+  user:
+    name: yarn
+    group: hadoop
+    groups: docker
+
+- name: Install java
+  apt:
+    name: "{{ item }}"
+  loop:
+    - openjdk-8-jre-headless
+    - openjdk-11-jre-headless
+
+- name: Distribution hadoop 
+  shell: # noqa 303
+    cmd: |
+      wget -q "{{ hadoop_download_url }}" && \
+       tar xf "{{ hadoop_archive_filename }}" && \
+       chown -R root:root "hadoop-{{ hadoop_version }}"  && \
+       rm "{{ hadoop_archive_filename }}" && \
+       rm -rf "hadoop-{{ hadoop_version }}/etc/hadoop"
+    chdir: /opt
+    creates: "/opt/hadoop-{{ hadoop_version }}"
+
+- name: Configuration link hadoop
+  file:
+    src: /etc/hadoop
+    dest: "/opt/hadoop-{{ hadoop_version }}/etc/hadoop"
+    owner: root
+    group: root
+    state: link
+    force: yes
+
+- name: Default hadoop symlink
+  file:
+    src: "/opt/hadoop-{{ hadoop_version }}"
+    dest: /opt/hadoop
+    owner: root
+    group: root
+    state: link
+    force: yes
+
+- name: Hadoop logs dir
+  file:
+    path: "/opt/hadoop-{{ hadoop_version }}/logs"
+    owner: yarn
+    group: hadoop
+    state: directory
+
+- name: Copy hadoop.sh to /etc/profile.d/
+  copy:
+    src: "hadoop.sh"
+    dest: "/etc/profile.d/"
