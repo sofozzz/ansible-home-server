@@ -4,7 +4,7 @@
   apt:
     name: postgresql-12
 
-- name: Install Python packages
+- name: Pip install psycopg2
   pip: 
     name: psycopg2-binary
 
