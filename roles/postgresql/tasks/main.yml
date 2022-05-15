@@ -2,7 +2,7 @@
 
 - name: Install postgresql
   apt:
-    name: postgresql-12
+    name: "postgresql-{{ postgresql_version }}"
 
 - name: Pip install psycopg2
   pip:

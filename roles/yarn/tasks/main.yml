@@ -1,12 +1,5 @@
 ---
 
-- name: Create yarn config directory
-  file:
-    path: /etc/hadoop
-    state: directory
-    owner: root
-    mode: 0755
-
 - name: Yarn config
   template:
     src: "{{ item }}"

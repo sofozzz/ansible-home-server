@@ -1,3 +1,7 @@
 ---
+
+hadoop_version: 3.3.2
+hadoop_data_dir: "/opt/hadoop-{{ hadoop_version }}"
+hadoop_config_dir: "/etc/hadoop"
 hadoop_archive_filename: "hadoop-{{ hadoop_version }}.tar.gz"
 hadoop_download_url: "https://archive.apache.org/dist/hadoop/common/hadoop-{{ hadoop_version }}/hadoop-{{ hadoop_version }}.tar.gz"

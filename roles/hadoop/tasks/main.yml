@@ -1,13 +1,21 @@
 ---
-- name: Group hadoop
+- name: Create group hadoop
   group:
     name: hadoop
 
-- name: User yarn
+- name: Create user yarn
   user:
     name: yarn
     group: hadoop
     groups: docker
+
+- name: Create hadoop config directory
+  file:
+    path: "{{ hadoop_config_dir }}"
+    state: directory
+    owner: root
+    group: hadoop
+    mode: 0770
 
 - name: Install java
   apt:
@@ -16,21 +24,42 @@
     - openjdk-8-jre-headless
     - openjdk-11-jre-headless
 
-- name: Distribution hadoop
-  shell: # noqa 303
-    cmd: |
-      wget -q "{{ hadoop_download_url }}" && \
-       tar xf "{{ hadoop_archive_filename }}" && \
-       chown -R root:root "hadoop-{{ hadoop_version }}"  && \
-       rm "{{ hadoop_archive_filename }}" && \
-       rm -rf "hadoop-{{ hadoop_version }}/etc/hadoop"
-    chdir: /opt
-    creates: "/opt/hadoop-{{ hadoop_version }}"
+- block:
+    - name: Download hadoop archive
+      become: yes
+      get_url:
+        url: "{{ hadoop_download_url }}"
+        dest: "/tmp/hadoop-{{ hadoop_version }}.tar.gz"
+      register: _download_archive
+      until: _download_archive is succeeded
+      retries: 5
+      delay: 2
+      check_mode: yes
+    - name: Unpack hadoop archive
+      become: yes
+      unarchive:
+        src: "/tmp/hadoop-{{ hadoop_version }}.tar.gz"
+        dest: "/tmp"
+        creates: "/tmp/hadoop-{{ hadoop_version }}"
+        remote_src: yes
+      check_mode: yes
+    - name: Remove default hadoop config
+      file:
+        state: absent
+        path: "/tmp/hadoop-{{ hadoop_version }}{{ hadoop_config_dir }}"
+    - name: Propagate hadoop binaries
+      copy:
+        src: "/tmp/hadoop-{{ hadoop_version }}"
+        dest: "/opt"
+        remote_src: yes
+        owner: root
+        group: root
+        mode: 0755
 
 - name: Configuration link hadoop
   file:
-    src: /etc/hadoop
-    dest: "/opt/hadoop-{{ hadoop_version }}/etc/hadoop"
+    src: "{{ hadoop_config_dir }}"
+    dest: "{{ hadoop_data_dir }}{{ hadoop_config_dir }}"
     owner: root
     group: root
     state: link
@@ -38,7 +67,7 @@
 
 - name: Default hadoop symlink
   file:
-    src: "/opt/hadoop-{{ hadoop_version }}"
+    src: "{{ hadoop_data_dir }}"
     dest: /opt/hadoop
     owner: root
     group: root
